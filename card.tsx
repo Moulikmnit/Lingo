@@ -1,92 +1,51 @@
-import { challenges } from "@/db/schema";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
-import { useCallback } from "react";
-import { useAudio, useKey } from "react-use"
+import { Check } from "lucide-react";
+import Image from "next/image"
 
-type Props = {
+type Props ={ 
+    title: string;
     id: number;
-    imageSrc: string | null;
-    audioSrc: string | null;
-    text: string;
-    shortcut: string;
-    selected?: boolean;
-    onClick: () => void;
+    imageSrc: string;
+    onClick: (id: number) => void;
     disabled?: boolean;
-    status?: "correct" | "wrong" | "none",
-    type: typeof challenges.$inferSelect["type"]
+    active?: boolean;
 }
 
 export const Card = ({
+    title,
     id,
     imageSrc,
-    audioSrc,
-    text,
-    shortcut,
-    selected,
     onClick,
-    status,
     disabled,
-    type
+    active
 }: Props) => {
-
-    const [audio, _, controls] = useAudio({ src: audioSrc || "" })
-
-    const handleClick = useCallback(() => {
-        if(disabled)
-        {
-            return;
-        }
-
-        controls.play();
-        onClick();
-    }, [disabled, onClick, controls])
-
-    useKey(shortcut, handleClick, {}, [handleClick]);
-
     return (
         <div 
             className={cn(
-                "h-full border-2 rounded-xl border-b-[4px] hover:bg-black/5 p-4 lg:p-6 cursor-pointer active:border-b-2",
-                selected && "border-sky-300 bg-sky-100 hover:bg-sky-100",
-                selected && status==="correct" && "border-green-300 bg-green-100 hover:bg-green-100",
-                selected && status==="wrong" && "border-rose-300 bg-rose-100 hover:bg-rose-100",
-                disabled && "pointer-events-none hover:bg-white",
-                type==="ASSIST" && "lg:p-3 w-full"
+                "h-full border-2 rounded-xl border-b-4 hover:bg-black/5 cursor-pointer active:border-b-2 flex flex-col items-center justify-between p-3 pb-6 min-h-[217px] min-w-[200px]",
+                disabled && "pointer-events-none opacity-50",
             )}
-            onClick={handleClick}
+            onClick={() => onClick(id)}
         >
-            {audio}
-            {imageSrc && (
-                <div 
-                    className="relative aspect-square mb-4 max-h-[80px] lg:max-h-[150px] w-full"
-                >
-                    <Image src={imageSrc} fill alt={text} className="bg-transparent"/>
-                </div>
-            )}
-
-            <div className={cn(
-                "flex items-center justify-between",
-                type==="ASSIST" && "flex-row-reverse",
-            )}>
-                {type==="ASSIST" && <div />}
-                <p className={cn(
-                    "text-neutral-600 text-sm lg:text-base",
-                    selected && "text-sky-500",
-                    selected && status==="correct" && "text-green-500",
-                    selected && status==="wrong" && "text-rose-500"
-                )}>
-                    {text}
-                </p>
-                <div className={cn(
-                    "lg:w-[30px] lg:h-[30px] w-[20px] h-[20px] border-2 flex items-center justify-center rounded-lg text-neutral-400 lg:text-[15px] text-xs font-semibold",
-                    selected && "border-sky-300 text-sky-500",
-                    selected && status==="correct" && "border-green-500 text-green-500",
-                    selected && status==="wrong" && "border-rose-500 text-rose-500",
-                )}>
-                    {shortcut}
-                </div>
+            <div className="min-h-[24px] w-full flex items-center justify-end">
+                {active && (
+                    <div className="rounded-md bg-green-600 flex items-center justify-center p-1.5">
+                        <Check className="text-white stroke-[4] h-4 w-4"/>
+                    </div>
+                )}
             </div>
+
+            <Image 
+                src={imageSrc}
+                alt={title}
+                height={90}
+                width={93.33}
+                className="rounded-lg drop-shadow-md border object-cover"
+            />
+
+            <p className="text-neutral-700 text-center font-bold mt-3">
+                {title}
+            </p>
         </div>
     )
 }

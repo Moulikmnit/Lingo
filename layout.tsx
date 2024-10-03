@@ -1,17 +1,23 @@
+import { Footer } from "./footer"
+import { Header } from "./header"
+
 type Props = {
     children: React.ReactNode
 }
 
-const LessonLayout = ({
+const MarketingLayout = ({
     children
 }: Props) => {
-    return ( 
-        <div className="flex flex-col h-full">
-            <div className="flex flex-col h-full w-full">
+
+    return (
+        <div className="min-h-screen flex flex-col">
+            <Header />
+            <main className="flex-1 flex-col items-center justify-center flex">
                 {children}
-            </div>
+            </main>
+            <Footer />
         </div>
-    );
+    )
 }
- 
-export default LessonLayout;
+
+export default MarketingLayout
